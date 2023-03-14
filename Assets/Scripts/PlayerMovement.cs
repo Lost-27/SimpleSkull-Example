@@ -1,19 +1,19 @@
-
-using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpingPower;
-    
+
 
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private LayerMask _groundLayer;
 
+    [SerializeField] private SpriteRenderer _sprite;
+
     private float _horizontal;
-    private bool _isFacingRight = true;
+    private bool _isFacingRight;
 
     private void Update()
     {
@@ -23,11 +23,12 @@ public class PlayerMovement : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpingPower);
         }
+
         if (Input.GetButtonUp("Jump") && _rb.velocity.y > 0f)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
         }
-        
+
         Flip();
     }
 
@@ -43,12 +44,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Flip()
     {
-        if (_isFacingRight && _horizontal < 0f || !_isFacingRight && _horizontal > 0f)
+        _sprite.flipX = _horizontal switch
         {
-            _isFacingRight = !_isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1;
-            transform.localScale = localScale;
-        }
+            > 0f => true,
+            < 0f => false,
+            _ => _sprite.flipX
+        };
     }
 }
